@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="style.css" media="all" rel="stylesheet" type="text/css" />
+  <script src="http://code.jquery.com/jquery.min.js" type="text/javascript"></script>
+  <script src="app.js" type="text/javascript"></script>
+</head>
+<body>
+  <div id="debug">
+    <p></p>
+    <script>
+      $(function(){
+        var c = $("#container");
+        var v = $("#viewport")
+        $(window).resize(function(){
+          $("#debug p").text( "OuterWidth - Container:" + c.outerWidth(true)+ " , ViewPort:" + v.outerWidth(true) );
+        });
+      });
+    </script>
+  </div>
+  <div id="viewport">
+    <div id="container">
+      <div class="element" id="first"></div>
+      <div class="element" id="second"></div>
+      <div class="element" id="third"></div>
+      <div class="element"></div>
+    </div>    
+  </div>
+  <div id="outer">
+    <div id="inner"/>
+  </div>
+</body>

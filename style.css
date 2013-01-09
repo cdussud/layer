@@ -1,0 +1,67 @@
+
+
+#container {
+  border:5px solid blue;
+}
+
+#viewport {
+/*  width:100px;*/
+  padding: 100px;
+  background: #eee;
+}
+
+.element {
+  width: 200px;
+  height: 200px;
+  background-color: lightblue;
+  margin: 10px;
+  border:1px solid darkblue;
+}
+
+#first {
+  background: lightgreen;
+  -webkit-transform: translate(10px,50px); /* Safari and Chrome */
+}
+
+#third {
+  background:blue;
+  -webkit-transform: translate(10px,0px); /* Safari and Chrome */
+}
+
+
+#outer {
+  background: #cbc;
+  width: 500px;
+}
+
+#inner {
+  background: yellow;
+  width: auto;
+  height: 200px;
+}
+
+
+
+
+#container_old {
+  margin-top: 200px;
+  transform: rotate(30deg);
+  -ms-transform: rotate(30deg); /* IE 9 */
+  -webkit-transform: rotate(30deg); /* Safari and Chrome */
+  -o-transform: rotate(30deg); /* Opera */
+  -moz-transform: rotate(30deg); /* Firefox */
+  border:5px solid blue;
+}
+
+.element_old {
+  width: 200px;
+  height: 200px;
+  background-color: lightblue;
+  margin: 10px;
+
+  transform: translate(50px,100px);
+  -ms-transform: translate(50px,100px); /* IE 9 */
+  -webkit-transform: translate(50px,100px); /* Safari and Chrome */
+  -o-transform: translate(50px,100px); /* Opera */
+  -moz-transform: translate(50px,100px); /* Firefox */
+}
