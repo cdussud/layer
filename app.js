@@ -16,10 +16,6 @@
 
 
 // Next:
-// 
-// Make WrapPanel
-// If parent constrains SP make it do the right thing.
-//  - wpf uses a scrollviewer
 
 // clipping -- for the elment that's absolutely positioned
 // apply clip to child if necessary. clip is relative to child's space.
@@ -28,13 +24,67 @@
 
 
 // TODO: 
+// - How to be notified for all cases where layout might change? 
+//   - resize of container, added / removed elements
 // - make StackPanel work on any element and in multiple places
 // - ensure it only does layout when it has children live and connected
 // - allow children to size to content (i.e. take up vertical space)
-
-
+// - define vertical alignment somehow
+// - handle clipping / scrolling
 
 (function(){
+
+  var WrapPanel = (function(){
+
+    function WrapPanel(){
+      this.$el = $('#container');   // borrow from backbone
+    }
+
+    WrapPanel.prototype.children = function(){
+      return this.$el.children();
+    };
+
+    WrapPanel.prototype.setOffset = function (child, x, y){
+
+    };
+
+    WrapPanel.prototype.layout = function() {
+      
+      var availableWidth = this.$el.width();
+      var offsetX = 0;
+      var offsetY = 0;
+      var rowHeight = 0;
+
+      this.children().each(function(index, item) {
+
+        var $child = $(item);
+        var width = $child.outerWidth(true);
+        var height = $child.outerHeight(true);
+
+        rowHeight = rowHeight < height ? height : rowHeight;
+
+        if (offsetX + width > availableWidth && offsetX > 0) // offsetX > 0: if first element in a row is too big for the row, place it anyway.
+        {
+          offsetY += rowHeight;
+          rowHeight = height;  // reset row height for the new row
+          offsetX = 0;
+        }
+
+        // Lay out the children
+        $child.css('position', 'absolute');
+        $child.css('transform','translate(' + offsetX + 'px, ' + offsetY + 'px)');
+        offsetX += width;
+
+      });
+
+      // Give the panel a height based on the children
+      this.$el.height(offsetY + rowHeight);
+    };
+
+    return WrapPanel;
+
+  })();
+
 
   var StackPanel = (function(){
 
@@ -46,7 +96,7 @@
 
     StackPanel.prototype.children = function(){
       return this.$el.children();
-    }
+    };
 
     StackPanel.prototype.layout = function() {
       // run layout. maybe don't need measure and arrange just yet.
@@ -80,9 +130,14 @@
 
   })();
 
-
+  var x;
   $(function(){
-    x = new StackPanel(true);
+  //  x = new StackPanel(true);
+    x = new WrapPanel();
+    x.layout();
+  });
+
+  $(window).resize(function(){
     x.layout();
   });
 
