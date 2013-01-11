@@ -1,47 +1,34 @@
-  
-// Positioning
-// position:relative means 'activate top, left'. You can then move it relative to where it would have been in layout already
-// position:absolute means 'don't give me space in layout'.
-// top and left, if set, are relative to the window or the first parent that's also relative or absolute
-// If all children of an are absolute, then element now has no height.
-
-// Size Constraints
-// Seems to work as expected by default, including width, height.
-// Width, height are always size of content area. outerWidth(true) is everything, with margin
-
-// Overflow
-// Doesn't work. Part of layout, and we've turned it off with absolute. 
-// My panel's overflow property is now useless
-
-// clipping -- for the elment that's absolutely positioned
-// apply clip to child if necessary. clip is relative to child's space.
-// $child.css('clip', 'rect(0px,60px,200px,0px)');
-
-
-// Alternative
-// Just set proper css classes. 
-// Can this all be done in CSS with no JS? What's the benefit then?
-
 
 // Next:
-// Think of a real-world case. Create a panel to support it
-// - Blog layout with header, content, sidebar, and footer
-// - Mini layout of form items
+// - Panels automatically attach to class names
+// - Namespace
+//
+// - Samples
+// - Blog layout with header, content, sidebar, and footer (svbtle)
+// - Mini layout of form items -- login page?
+// - Interop with bootstrap's grid
+//
+// - base class for panels
 
 // Other panels
 // pinterest / masonry: http://masonry.desandro.com/
+// http://www.wookmark.com/jquery-plugin
 
 
-
-// TODO: 
-// - How to be notified for all cases where layout might change? 
-//   - resize of container, added / removed elements
+// TODO:
 // - make StackPanel work on any element and in multiple places
 // - ensure it only does layout when it has children live and connected
 // - allow children to size to content (i.e. take up vertical space)
 // - define vertical alignment somehow
 // - handle clipping / scrolling
 
+
+(function(){
+  var Layer = window.Layer = {};
+
+  //
+  // Helpers
+  //
   var Rect = (function(){
     function Rect(x, y, width, height){
       // TODO: default to 0
@@ -54,23 +41,21 @@
     return Rect;
   })();
 
-function setOuterWidth(element, width){
-  element.width(width - (element.outerWidth(true) - element.width()))
-}
+  function setOuterWidth(element, width){
+    element.width(width - (element.outerWidth(true) - element.width()))
+  }
 
-function setOuterHeight(element, height){
-  element.height(height - (element.outerHeight(true) - element.height()))
-}
-
-
-
-(function(){
+  function setOuterHeight(element, height){
+    element.height(height - (element.outerHeight(true) - element.height()))
+  }
 
 
-  var DockPanel = (function(){
+  var DockPanel = Layer.DockPanel = (function(){
 
-    function DockPanel(){
-      this.$el = $('#container');   // borrow from backbone
+    function DockPanel($el){
+      // TODO: what if unspecified?
+      this.$el = $el; // borrow from backbone
+      this.layout();
     }
 
     DockPanel.prototype.children = function(){
@@ -135,9 +120,10 @@ function setOuterHeight(element, height){
 
 
         // Lay out the children
-        $child.css('position', 'absolute');
-        $child.css('transform','translate(' + offsetX + 'px, ' + offsetY + 'px)');
-
+        $child.css({
+          position : 'absolute',
+          transform: 'translate(' + offsetX + 'px, ' + offsetY + 'px)'
+        });
       });
 
       // TODO: panel has to size properly... fix this later
@@ -182,8 +168,11 @@ function setOuterHeight(element, height){
         }
 
         // Lay out the children
-        $child.css('position', 'absolute');
-        $child.css('transform','translate(' + offsetX + 'px, ' + offsetY + 'px)');
+        $child.css({
+          position : 'absolute',
+          transform: 'translate(' + offsetX + 'px, ' + offsetY + 'px)'
+        });
+
         offsetX += width;
 
       });
@@ -241,17 +230,39 @@ function setOuterHeight(element, height){
 
   })();
 
-  var x;
-  $(function(){
-  //  x = new StackPanel(true);
-    x = new DockPanel();
-    x.layout();
-  });
 
-  $(window).resize(function(){
-    x.layout();
-  });
+  // Manages the instances of the panels on a page
+  var Controller = (function(){
+
+    var panelClasses = { 
+      'dockpanel' : DockPanel, 
+      'stackpanel': StackPanel, 
+      'wrappanel': WrapPanel };
+
+    function Controller(){
+      $(function(){
+
+        // On document.ready instantiate and attach the panels.
+        // TODO: handle multiple of the same type on the page
+        for (var cssClass in panelClasses) {
+          var $element = $('.' + cssClass);
+          if ($element.length) {
+            var x = new panelClasses[cssClass]($element);
+          }
+        }
+      });
+
+      // todo: attach each panel to a resize event to rerun layout
+      // $(window).resize(function(){
+      //   x.layout();
+      // });
+    }
 
 
+
+    return Controller;
+  }).call(this);
+
+  var controller = new Controller();
  
-})();
+}).call(this);

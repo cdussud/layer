@@ -1,0 +1,30 @@
+  
+Positioning
+position:relative means 'activate top, left'. You can then move it relative to where it would have been in layout already
+position:absolute means 'don't give me space in layout'.
+top and left, if set, are relative to the window or the first parent that's also relative or absolute
+If all children of an are absolute, then element now has no height.
+
+Size Constraints
+Seems to work as expected by default, including width, height.
+Width, height are always size of content area. outerWidth(true) is everything, with margin
+
+Overflow
+Doesn't work. Part of layout, and we've turned it off with absolute. 
+My panel's overflow property is now useless
+
+clipping -- for the elment that's absolutely positioned
+apply clip to child if necessary. clip is relative to child's space.
+$child.css('clip', 'rect(0px,60px,200px,0px)');
+
+
+Alternative
+Just set proper css classes. 
+Can this all be done in CSS with no JS? What's the benefit then?
+Can also set top and left properties instead of css transform
+
+
+- How to be notified for all cases where layout might change? 
+  - resize of container, added / removed elements
+  - DOMSubtreeModified
+  - onresize event
