@@ -1,14 +1,11 @@
 
 // Next:
-// - Panels automatically attach to class names
-// - Namespace
 //
 // - Samples
 // - Blog layout with header, content, sidebar, and footer (svbtle)
 // - Mini layout of form items -- login page?
 // - Interop with bootstrap's grid
 //
-// - base class for panels
 
 // Other panels
 // pinterest / masonry: http://masonry.desandro.com/
@@ -16,7 +13,7 @@
 
 
 // TODO:
-// - make StackPanel work on any element and in multiple places
+// - make same panel type available in multiple places on the page
 // - ensure it only does layout when it has children live and connected
 // - allow children to size to content (i.e. take up vertical space)
 // - define vertical alignment somehow
@@ -27,40 +24,35 @@
   var Layer = window.Layer = {};
 
   //
-  // Helpers
+  // Classes
   //
-  var Rect = (function(){
-    function Rect(x, y, width, height){
-      // TODO: default to 0
-      this.x = x;
-      this.y = y;
-      this.width = width;
-      this.height = height;
-    }
 
-    return Rect;
-  })();
-
-  function setOuterWidth(element, width){
-    element.width(width - (element.outerWidth(true) - element.width()))
-  }
-
-  function setOuterHeight(element, height){
-    element.height(height - (element.outerHeight(true) - element.height()))
-  }
-
-
-  var DockPanel = Layer.DockPanel = (function(){
-
-    function DockPanel($el){
-      // TODO: what if unspecified?
-      this.$el = $el; // borrow from backbone
+  // Common base class. Meant to be abstract
+  var Panel = (function(){
+    function Panel($el){
+      this.$el = $el;
       this.layout();
+
+      // TODO: is this overkill?
+      self = this;
+      $(window).resize(function(){
+        self.layout();
+      });
     }
 
-    DockPanel.prototype.children = function(){
+    Panel.prototype.children = function(){
       return this.$el.children();
     };
+
+    return Panel;
+  })();
+
+  var DockPanel = Layer.DockPanel = (function(){
+    __extends(DockPanel, Panel);
+
+    function DockPanel($el){
+      return this.base($el);
+    }
 
     DockPanel.prototype.layout = function() {
 
@@ -136,14 +128,12 @@
   })();
 
   var WrapPanel = (function(){
+    __extends(WrapPanel, Panel);
 
-    function WrapPanel(){
-      this.$el = $('#container');   // borrow from backbone
+    function WrapPanel($el){
+      return this.base($el);
     }
 
-    WrapPanel.prototype.children = function(){
-      return this.$el.children();
-    };
 
     WrapPanel.prototype.layout = function() {
       
@@ -187,21 +177,14 @@
 
 
   var StackPanel = (function(){
+    __extends(StackPanel, Panel);
 
-    function StackPanel(horizontal){
-
+    function StackPanel($el, horizontal){
+      this.base($el);
       this.horizontal = (horizontal !== undefined ? horizontal : true)
-      this.$el = $('#container');   // borrow from backbone
     }
 
-    StackPanel.prototype.children = function(){
-      return this.$el.children();
-    };
-
-    StackPanel.prototype.layout = function() {
-      // run layout. maybe don't need measure and arrange just yet.
-
-      
+    StackPanel.prototype.layout = function() {      
       var totalWidth = 0;
       var maxHeight = 0;
 
@@ -235,9 +218,9 @@
   var Controller = (function(){
 
     var panelClasses = { 
-      'dockpanel' : DockPanel, 
-      'stackpanel': StackPanel, 
-      'wrappanel': WrapPanel };
+      dockpanel : DockPanel, 
+      stackpanel : StackPanel, 
+      wrappanel : WrapPanel };
 
     function Controller(){
       $(function(){
@@ -251,18 +234,51 @@
           }
         }
       });
-
-      // todo: attach each panel to a resize event to rerun layout
-      // $(window).resize(function(){
-      //   x.layout();
-      // });
     }
 
-
-
     return Controller;
-  }).call(this);
+  })();
 
   var controller = new Controller();
- 
+
+  //
+  // Utilities
+  //
+
+  function Rect(x, y, width, height){
+    // TODO: default to 0
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+  }
+
+  function setOuterWidth($element, width){
+    $element.width(width - ($element.outerWidth(true) - $element.width()))
+  }
+
+  function setOuterHeight($element, height){
+    $element.height(height - ($element.outerHeight(true) - $element.height()))
+  }
+
+  // Prototypical inheritance.
+  function __extends(child, parent){
+    function ctor() { 
+      this.constructor = child; 
+    } 
+
+    // instance variables (properties)
+    $.extend(child, parent);  
+
+    ctor.prototype = parent.prototype; 
+    child.prototype = new ctor(); 
+    child.__super__ = parent.prototype; 
+
+    // Add function for the child to call the parent constructor
+    parent.prototype.base = function(){
+      return parent.apply(this, arguments);
+    }
+
+    return child;
+  } 
 }).call(this);

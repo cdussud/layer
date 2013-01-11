@@ -1,8 +1,5 @@
 
 
-#container {
-  border:5px solid blue;
-}
 
 #viewport {
 /*  width:100px;*/
@@ -10,7 +7,11 @@
   background: #eee;
 }
 
-.element {
+.container {
+  border:5px solid lightblue;
+}
+
+.container div {
   width: 200px;
   height: 200px;
   background-color: lightblue;
@@ -24,13 +25,13 @@
   transition:all 0.4s ease-in-out;*/
 }
 
-#first {
-  background: lightgreen;
+div#first{
+  background-color: lightgreen;
   -webkit-transform: translate(10px,50px); /* Safari and Chrome */
 }
 
-#third {
-  background:blue;
+div#second {
+  background-color:blue;
   -webkit-transform: translate(10px,0px); /* Safari and Chrome */
 }
 
