@@ -1,0 +1,41 @@
+
+body {
+  margin: 0px;
+}
+
+header {
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 1px;
+  line-height: 23px;
+  font-family: "helvetica";
+  text-transform: uppercase;
+  padding-left: 40px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid #e3e3e3;
+}
+
+#sidebar{
+  padding: 30px;
+  padding-right: 60px;
+  border-right: 1px solid #e3e3e3;
+}
+
+
+#logo {
+  width: 112px;
+  height: 112px;
+  border-radius: 70px;
+  border: 7px solid lightblue;
+  padding: 7px;
+}
+
+#logo-inner{
+  width: 112;
+  height: 112px;
+  border-radius: 56px;
+  background: lightblue;
+}
+
+

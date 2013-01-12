@@ -12,7 +12,13 @@
 // http://www.wookmark.com/jquery-plugin
 
 
+// svbtle layout: 
+// Need a dockpanel that fills entire window. 
+// Depending on size sometimes the sidebar scrolls w/ content and sometimes it doesn't.
+
+
 // TODO:
+// - fix DockPanel's sizing
 // - make same panel type available in multiple places on the page
 // - ensure it only does layout when it has children live and connected
 // - allow children to size to content (i.e. take up vertical space)
@@ -69,6 +75,7 @@
       this.children().each(function(index, item) {
 
         var $child = $(item);
+        $child.css('position','absolute'); // otherwise width measurements could take up whole client area
         var width = $child.outerWidth(true);
         var height = $child.outerHeight(true);
 
@@ -113,12 +120,12 @@
 
         // Lay out the children
         $child.css({
-          position : 'absolute',
           transform: 'translate(' + offsetX + 'px, ' + offsetY + 'px)'
         });
       });
 
       // TODO: panel has to size properly... fix this later
+      // Default is size to content. Handle when someone sets the size.
       this.$el.width(contentWidth);
       this.$el.height(contentHeight);
     };

@@ -1,4 +1,4 @@
-  
+
 Positioning
 position:relative means 'activate top, left'. You can then move it relative to where it would have been in layout already
 position:absolute means 'don't give me space in layout'.
@@ -28,3 +28,6 @@ Can also set top and left properties instead of css transform
   - resize of container, added / removed elements
   - DOMSubtreeModified
   - onresize event
+
+
+Eventually look into how to make responsive stuff better.
