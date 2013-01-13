@@ -4,6 +4,7 @@
 // - Samples
 // - Blog layout with header, content, sidebar, and footer (svbtle)
 // - Mini layout of form items -- login page?
+// - that android home bar example i saw
 // - Interop with bootstrap's grid
 //
 
@@ -18,7 +19,7 @@
 
 
 // TODO:
-// - fix DockPanel's sizing
+// - Allow Dockpanel to have a constrained height. 
 // - make same panel type available in multiple places on the page
 // - ensure it only does layout when it has children live and connected
 // - allow children to size to content (i.e. take up vertical space)
@@ -40,6 +41,7 @@
       this.layout();
 
       // TODO: is this overkill?
+      // Note: multiple panels can't listen to this.
       self = this;
       $(window).resize(function(){
         self.layout();
@@ -48,6 +50,23 @@
 
     Panel.prototype.children = function(){
       return this.$el.children();
+    };
+
+    Panel.prototype.eachChild = function(callback){
+      this.$el.children().each(function(index, item){
+        var $child = $(item);
+        $child.css('position','absolute'); // otherwise width measurements could take up whole client area
+
+        callback(index, $child, $child.outerWidth(true), $child.outerHeight(true));
+      });
+    }
+
+    Panel.prototype.width = function(){
+      return this.$el.width();
+    };
+
+    Panel.prototype.height = function(){
+      return this.$el.height();
     };
 
     return Panel;
@@ -60,74 +79,115 @@
       return this.base($el);
     }
 
+    function updateContentArea(contentArea, $child, width, height) {
+      // This is actually the core of the layout algorithm.
+      // It updates the content area rectangle with the space left after
+      // the given child is added to the panel.
+
+      if ($child.hasClass('dock-top')) {
+        contentArea.y += height;
+        contentArea.height -= height;
+      }
+      else if ($child.hasClass('dock-left')) {
+        contentArea.x += width;
+        contentArea.width -= width;
+      }
+      else if ($child.hasClass('dock-right')) {
+        contentArea.width -= width;
+      }
+      else if ($child.hasClass('dock-bottom')) {
+        contentArea.height -= height;
+      }
+
+      return contentArea;
+    }
+ 
+    DockPanel.prototype.measureHeight = function() {
+
+      // Simply compute the total height.
+      // This requires running the layout algorithm and keeping track of when a child grows past the
+      // available area.
+      // The algorithm to compute this is slightly tricky: Compute the position of each child as normal.
+      // Keep two offsets as we go: the highest docked bottom element and the lowest docked top. 
+      // If during layout a child crosses either of these lines then we need to increase the total height. 
+      // The two lines are the top and bottom of the content area rectangle.
+
+      var totalHeight = 0;
+      var contentArea = new Rect(0, 0, this.width(), 0);  // Rectangle tracking how much space is left for elements
+
+      this.eachChild(function(index, $child, width, height) {
+
+        if (contentArea.height < height){
+          totalHeight += height - contentArea.height;
+          contentArea.height = height;
+        }
+          
+        contentArea = updateContentArea(contentArea, $child, width, height);
+       
+      });
+
+      // Set the panel's height now that we know it.
+      this.$el.height(totalHeight);
+      return totalHeight;
+    }
+
+
+
     DockPanel.prototype.layout = function() {
+
+      // Sizes the children and places them properly;
 
       // TODO: what if children don't specify how they dock?
       // TODO: deal with what happens when we run out of space.
-      // TODO: implement bottom and right
+    
+      // Width: Don't ever size to content. Just use the given numerical value.
+      // Height: Size to content if specified height is 'auto'. Otherwise read the height numerically and use that.
       
       var numChildren = this.children().length;
-      var contentWidth = this.$el.width();
-      var contentHeight = this.$el.height();
-
+      var contentWidth = this.width();
+      var contentHeight = this.measureHeight();
+    
       var contentArea = new Rect(0, 0, contentWidth, contentHeight);
 
-      this.children().each(function(index, item) {
+      this.eachChild(function(index, $child, width, height) {
 
-        var $child = $(item);
-        $child.css('position','absolute'); // otherwise width measurements could take up whole client area
-        var width = $child.outerWidth(true);
-        var height = $child.outerHeight(true);
+        var offsetX = contentArea.x;
+        var offsetY = contentArea.y;
 
-        var offsetX = 0;
-        var offsetY = 0;
+        if (index < numChildren - 1)
+        {
+          if ($child.hasClass('dock-top')){
+            setOuterWidth($child, contentArea.width);
+          }
+          else if ($child.hasClass('dock-left')){
+            setOuterHeight($child, contentArea.height);
+          }
+          else if ($child.hasClass('dock-right')){
 
-        if ($child.hasClass('dock-top')){
+            // TODO: deal with case when they don't fit
+            setOuterHeight($child, contentArea.height);
+            offsetX = contentArea.right() - width;
+          }
+          else if ($child.hasClass('dock-bottom')){
 
-          setOuterWidth($child, contentArea.width);
-          offsetX = contentArea.x;
-          offsetY = contentArea.y;
-
-          contentArea.y += height;
-          contentArea.height -= height;
+            setOuterWidth($child, contentArea.width);
+            offsetY = contentArea.bottom() - height;
+          }
         }
-        else if ($child.hasClass('dock-left')){
-
-          setOuterHeight($child, contentArea.height);
-          offsetX = contentArea.x;
-          offsetY = contentArea.y;
-
-          contentArea.x += width;
-          contentArea.width -= width;
-        }
-        else if ($child.hasClass('dock-right')){
-
-        }
-        else if ($child.hasClass('dock-bottom')){
-          
-        }
-        else if (index + 1 == numChildren){
-          // last child with nothing specified fills the remaining space
+        else { 
+          // last child fills the remaining space
           setOuterWidth($child, contentArea.width);
           setOuterHeight($child, contentArea.height);
-          offsetX = contentArea.x;
-          offsetY = contentArea.y;
-
-          contentArea.width = 0;
-          contentArea.height = 0;
         }
 
 
-        // Lay out the children
+        // Position the children
+        contentArea = updateContentArea(contentArea, $child, width, height);
+
         $child.css({
           transform: 'translate(' + offsetX + 'px, ' + offsetY + 'px)'
         });
       });
-
-      // TODO: panel has to size properly... fix this later
-      // Default is size to content. Handle when someone sets the size.
-      this.$el.width(contentWidth);
-      this.$el.height(contentHeight);
     };
 
     return DockPanel;
@@ -149,11 +209,7 @@
       var offsetY = 0;
       var rowHeight = 0;
 
-      this.children().each(function(index, item) {
-
-        var $child = $(item);
-        var width = $child.outerWidth(true);
-        var height = $child.outerHeight(true);
+      this.eachChild(function(index, $child, width, height) {
 
         rowHeight = rowHeight < height ? height : rowHeight;
 
@@ -166,7 +222,6 @@
 
         // Lay out the children
         $child.css({
-          position : 'absolute',
           transform: 'translate(' + offsetX + 'px, ' + offsetY + 'px)'
         });
 
@@ -183,6 +238,7 @@
   })();
 
 
+  // TODO: allow vertical layout too
   var StackPanel = (function(){
     __extends(StackPanel, Panel);
 
@@ -195,15 +251,8 @@
       var totalWidth = 0;
       var maxHeight = 0;
 
-      this.children().each(function(index, item) {
+      this.eachChild(function(index, $child, width, height) {
 
-        var $child = $(item);
-        var width = $child.outerWidth(true);
-        var height = $child.outerHeight(true);
-
-
-        // Lay out the children
-        $child.css('position', 'absolute');
         $child.css("transform","translateX(" + totalWidth + "px)");
         totalWidth += width;
 
@@ -258,6 +307,19 @@
     this.y = y;
     this.width = width;
     this.height = height;
+  }
+
+  Rect.prototype.bottom = function(){
+    return this.y + this.height;
+  };
+
+  Rect.prototype.right = function(){
+    return this.x + this.width;
+  };
+
+  function Point(x, y){
+    this.x = x;
+    this.y = y;
   }
 
   function setOuterWidth($element, width){

@@ -9,14 +9,20 @@
 
 .container {
   border:5px solid lightblue;
+  overflow: hidden;  /* to get height set properly when elements float */
 }
 
 .container div {
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
   background-color: lightblue;
   margin: 10px;
   border:1px solid darkblue;
+  padding: 20px;
+  font-family: 'helvetica';
+  font-weight: bold;
+
+/*  float:left;*/
 
   /* for fun */
 /*  -webkit-transition:all 0.4s ease-in-out;
@@ -27,12 +33,18 @@
 
 div#first{
   background-color: lightgreen;
-  -webkit-transform: translate(10px,50px); /* Safari and Chrome */
+  height: 100px;
 }
 
-div#second {
-  background-color:blue;
-  -webkit-transform: translate(10px,0px); /* Safari and Chrome */
+div#third {
+  background-color:lightpink;
+  height: 120px;
+}
+
+div#fourth{
+  background-color:lightyellow;
+  height: 250px;
+  width: 100px;
 }
 
 
@@ -45,30 +57,4 @@ div#second {
   background: yellow;
   width: auto;
   height: 200px;
-}
-
-
-
-
-#container_old {
-  margin-top: 200px;
-  transform: rotate(30deg);
-  -ms-transform: rotate(30deg); /* IE 9 */
-  -webkit-transform: rotate(30deg); /* Safari and Chrome */
-  -o-transform: rotate(30deg); /* Opera */
-  -moz-transform: rotate(30deg); /* Firefox */
-  border:5px solid blue;
-}
-
-.element_old {
-  width: 200px;
-  height: 200px;
-  background-color: lightblue;
-  margin: 10px;
-
-  transform: translate(50px,100px);
-  -ms-transform: translate(50px,100px); /* IE 9 */
-  -webkit-transform: translate(50px,100px); /* Safari and Chrome */
-  -o-transform: translate(50px,100px); /* Opera */
-  -moz-transform: translate(50px,100px); /* Firefox */
 }

@@ -10,7 +10,7 @@
     <p></p>
     <script>
       $(function(){
-        var c = $("#container");
+        var c = $(".container");
         var v = $("#viewport")
         $(window).resize(function(){
           $("#debug p").text( "OuterWidth - Container:" + c.outerWidth(true)+ " , ViewPort:" + v.outerWidth(true) );
@@ -27,10 +27,12 @@
 
   <div id="viewport">
     <div class="container dockpanel">
-      <div class="dock-top" id="first"></div>
-      <div class="dock-left" id="second"></div>
-      <div class="dock-left" id="third"></div>
-      <div></div>
+      <div class="dock-top" id="first">1 top</div>
+      <div class="dock-left" id="second">2 left</div>
+      <div class="dock-bottom" id="third">3 bottom</div>
+      <div class="dock-right" id="fourth">4 right</div>
+      <div class="dock-left">5 left</div>
+      <div>6 none</div>
     </div>    
   </div>
 </body>

@@ -18,6 +18,10 @@ apply clip to child if necessary. clip is relative to child's space.
 $child.css('clip', 'rect(0px,60px,200px,0px)');
 
 
+Width in CSS:
+Block-level elements take up full width of their parent. Height is height of children.
+
+
 Alternative
 Just set proper css classes. 
 Can this all be done in CSS with no JS? What's the benefit then?
@@ -31,3 +35,9 @@ Can also set top and left properties instead of css transform
 
 
 Eventually look into how to make responsive stuff better.
+
+
+
+Some nice layout things to consider
+- way to say 'fill remainder' for width or height
+- 
