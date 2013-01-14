@@ -34,7 +34,6 @@
   var Panel = (function(){
     function Panel($el){
       this.$el = $el;
-      this.layout();
 
       // TODO: is this overkill?
       // Note: multiple panels can't listen to this.
@@ -72,7 +71,16 @@
     __extends(DockPanel, Panel);
 
     function DockPanel($el){
-      return this.base($el);
+      this.base($el);
+
+      // save off child's initial layout width
+      var initialChildWidths = [];
+      this.eachChild(function(index, $child, width, height) {
+        initialChildWidths.push(width);
+      });
+
+      this.initialChildWidths = initialChildWidths;
+      this.layout();
     }
 
     function updateContentArea(contentArea, $child, width, height) {
@@ -97,30 +105,30 @@
 
       return contentArea;
     }
+
  
     DockPanel.prototype.measureHeight = function() {
 
       // Simply compute the total height.
-      // This requires running the layout algorithm and keeping track of when a child grows past the
-      // available area.
-      // The algorithm to compute this is slightly tricky: Compute the position of each child as normal.
+      // This requires running the layout algorithm and keeping track of when a child grows past the available area.
+      // Compute the position of each child as normal.
       // Keep two offsets as we go: the highest docked bottom element and the lowest docked top. 
       // If during layout a child crosses either of these lines then we need to increase the total height. 
       // The two lines are the top and bottom of the content area rectangle.
 
       var totalHeight = 0;
-      var totalWidth = this.width();
-      var contentArea = new Rect(0, 0, this.width(), 0);  // Rectangle tracking how much space is left for elements
+      var totalWidth = 0;
+      var contentArea = new Rect(0, 0, 0, 0);  // Rectangle tracking how much space is left for elements. Grows to accomodate children.
+      var initialChildWidths = this.initialChildWidths;
 
       this.eachChild(function(index, $child, width, height) {
+
+        width = initialChildWidths[index];
 
         if (contentArea.height < height) {
           totalHeight += height - contentArea.height;
           contentArea.height = height;
         }
-
-        // TODO: need to be careful about how we set the width. Maybe time to start storing this shit on the panel
-        // TODO: maybe set minwidth instead of width.
 
         // We'll do the same for width: this enforces that the minimum width of the panel is what lays out the children.
         if (contentArea.width < width) {
@@ -129,14 +137,13 @@
         }
           
         contentArea = updateContentArea(contentArea, $child, width, height);
-       
       });
 
       // Set the panel's height now that we know it.
       this.$el.height(totalHeight);
 
       if (totalWidth > this.width()) {
-        this.$el.width(totalWidth);
+        this.$el.css('min-width', totalWidth);
       }
       return totalHeight;
     }
@@ -173,13 +180,10 @@
             setOuterHeight($child, contentArea.height);
           }
           else if ($child.hasClass('dock-right')){
-
-            // TODO: deal with case when they don't fit
             setOuterHeight($child, contentArea.height);
             offsetX = contentArea.right() - width;
           }
           else if ($child.hasClass('dock-bottom')){
-
             setOuterWidth($child, contentArea.width);
             offsetY = contentArea.bottom() - height;
           }
@@ -208,7 +212,8 @@
     __extends(WrapPanel, Panel);
 
     function WrapPanel($el){
-      return this.base($el);
+      this.base($el);
+      this.layout();
     }
 
 
@@ -255,6 +260,7 @@
     function StackPanel($el, horizontal){
       this.base($el);
       this.horizontal = (horizontal !== undefined ? horizontal : true)
+      this.layout();
     }
 
     StackPanel.prototype.layout = function() {      
