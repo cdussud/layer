@@ -1,14 +1,20 @@
 
 body {
   margin: 0px;
+  font-family: "Open Sans";
+  font-size: 15px;
+  line-height: 23px;
 }
+
+h2 {
+  font-size: 20px;
+}
+
 
 header {
   font-weight: 700;
   font-size: 16px;
   letter-spacing: 1px;
-  line-height: 23px;
-  font-family: "helvetica";
   text-transform: uppercase;
   padding-left: 40px;
   padding-top: 40px;
@@ -32,10 +38,38 @@ header {
 }
 
 #logo-inner{
-  width: 112;
+  width: 112px;
   height: 112px;
   border-radius: 56px;
   background: lightblue;
 }
 
+#kudos-container{
+  padding-top: 70px;
+  padding-right: 20px;
+}
 
+#kudos{
+  width: 15px;
+  height: 15px;
+  border-radius: 56px;
+  border: 5px solid black;
+  padding: 17px;
+}
+
+#kudos-inner { 
+  width: 14px;
+  height: 14px;
+  border-radius: 14px;
+  background: black;
+}
+
+
+#content {
+  padding: 40px;
+  min-width: 400px;
+}
+
+#content h2, #content p {
+  max-width: 500px;
+}

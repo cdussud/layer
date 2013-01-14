@@ -8,17 +8,13 @@
 // - Interop with bootstrap's grid
 //
 
-// Other panels
-// pinterest / masonry: http://masonry.desandro.com/
-// http://www.wookmark.com/jquery-plugin
 
-
-// svbtle layout: 
-// Need a dockpanel that fills entire window. 
+// svbtle layout:  
 // Depending on size sometimes the sidebar scrolls w/ content and sometimes it doesn't.
 
 
 // TODO:
+// - Handle what happens when items don't fit. Does it stop resizing? 
 // - Allow Dockpanel to have a constrained height. 
 // - make same panel type available in multiple places on the page
 // - ensure it only does layout when it has children live and connected
@@ -113,13 +109,23 @@
       // The two lines are the top and bottom of the content area rectangle.
 
       var totalHeight = 0;
+      var totalWidth = this.width();
       var contentArea = new Rect(0, 0, this.width(), 0);  // Rectangle tracking how much space is left for elements
 
       this.eachChild(function(index, $child, width, height) {
 
-        if (contentArea.height < height){
+        if (contentArea.height < height) {
           totalHeight += height - contentArea.height;
           contentArea.height = height;
+        }
+
+        // TODO: need to be careful about how we set the width. Maybe time to start storing this shit on the panel
+        // TODO: maybe set minwidth instead of width.
+
+        // We'll do the same for width: this enforces that the minimum width of the panel is what lays out the children.
+        if (contentArea.width < width) {
+          totalWidth += width - contentArea.width;
+          contentArea.width = width;
         }
           
         contentArea = updateContentArea(contentArea, $child, width, height);
@@ -128,6 +134,10 @@
 
       // Set the panel's height now that we know it.
       this.$el.height(totalHeight);
+
+      if (totalWidth > this.width()) {
+        this.$el.width(totalWidth);
+      }
       return totalHeight;
     }
 
@@ -144,8 +154,8 @@
       // Height: Size to content if specified height is 'auto'. Otherwise read the height numerically and use that.
       
       var numChildren = this.children().length;
-      var contentWidth = this.width();
       var contentHeight = this.measureHeight();
+      var contentWidth = this.width();
     
       var contentArea = new Rect(0, 0, contentWidth, contentHeight);
 

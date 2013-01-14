@@ -37,7 +37,16 @@ Can also set top and left properties instead of css transform
 Eventually look into how to make responsive stuff better.
 
 
+Show code examples for how much easier certain layouts are.
+
 
 Some nice layout things to consider
 - way to say 'fill remainder' for width or height
-- 
+
+
+Some sites with layout that are worth looking at
+https://medium.com/@ev -- good responsive example
+
+Other panels
+ pinterest / masonry: http://masonry.desandro.com/
+ http://www.wookmark.com/jquery-plugin
