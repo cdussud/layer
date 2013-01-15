@@ -6,8 +6,11 @@ body {
   line-height: 23px;
 }
 
+h1 {
+  font-size: 28px;
+}
 h2 {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 
@@ -17,15 +20,30 @@ header {
   letter-spacing: 1px;
   text-transform: uppercase;
   padding-left: 40px;
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding-top: 35px;
+  padding-bottom: 35px;
   border-bottom: 1px solid #e3e3e3;
 }
 
-#sidebar{
-  padding: 30px;
-  padding-right: 60px;
+#sidebar {
+  padding-top: 20px;
+  padding-left: 40px;
+  padding-right: 40px;
   border-right: 1px solid #e3e3e3;
+  width: 175px;
+}
+
+#sidebar p, #sidebar h2 {
+  color: #585c60;
+}
+
+#sidebar p {
+  font-size: 16px;
+}
+
+#sidebar h2 {
+  font-size: 14px;
+  text-transform: uppercase;
 }
 
 

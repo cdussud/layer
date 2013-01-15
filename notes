@@ -39,9 +39,10 @@ Eventually look into how to make responsive stuff better.
 
 Show code examples for how much easier certain layouts are.
 
-
 Some nice layout things to consider
 - way to say 'fill remainder' for width or height
+- vertical alignment
+- horizontal alignment 
 
 
 Some sites with layout that are worth looking at
