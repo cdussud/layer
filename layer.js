@@ -1,8 +1,8 @@
 
 // Next:
 //
+// - Readme / Getting started docs
 // - Samples
-// - Blog layout with header, content, sidebar, and footer (svbtle)
 // - Mini layout of form items -- login page?
 // - that android home bar example i saw
 // - Interop with bootstrap's grid
@@ -14,7 +14,7 @@
 
 
 // TODO:
-// - Handle what happens when items don't fit. Does it stop resizing? 
+// - Fix bug where 2nd panel on page doesn't get resize events
 // - Allow Dockpanel to have a constrained height. 
 // - make same panel type available in multiple places on the page
 // - ensure it only does layout when it has children live and connected

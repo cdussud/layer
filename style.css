@@ -13,8 +13,8 @@
 }
 
 .container div {
-  width: 150px;
-  height: 150px;
+  width: 30px;
+  height: 30px;
   background-color: lightblue;
   margin: 10px;
   border:1px solid darkblue;
@@ -33,18 +33,22 @@
 
 div#first{
   background-color: lightgreen;
-  height: 100px;
+  height: 40px;
 }
 
 div#third {
   background-color:lightpink;
-  height: 120px;
+  height: 20px;
 }
 
-div#fourth{
+div#fourth {
   background-color:lightyellow;
-  height: 250px;
+  height: 150px;
   width: 100px;
+}
+
+div#sixth {
+  background-color:lightskyblue;
 }
 
 

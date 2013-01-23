@@ -1,0 +1,37 @@
+
+
+#viewport {
+  padding: 100px;
+  background: #eee;
+}
+
+.dockpanel {
+  border:5px solid lightblue;
+}
+
+.dockpanel div {
+  width: 150px;
+  height: 150px;
+  background-color: lightblue;
+  margin: 10px;
+  border:1px solid darkblue;
+  padding: 20px;
+  font-family: 'helvetica';
+  font-weight: bold;
+}
+
+div#first{
+  background-color: lightgreen;
+  height: 100px;
+}
+
+div#third {
+  background-color:lightpink;
+  height: 120px;
+}
+
+div#fourth{
+  background-color:lightyellow;
+  height: 250px;
+  width: 100px;
+}
