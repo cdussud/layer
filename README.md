@@ -38,4 +38,4 @@ dock-bottom and dock-right behave similarly.
 
 As children are added they dock as specified, taking up the space available. The last child will fill all remaining space, regardless of the dock type specified.
 
-![dockpanel](/docs/dockpanel.jpg "DockPanel")
+![dockpanel](https://raw.github.com/cdussud/layer/master/docs/dockpanel.png "DockPanel")
