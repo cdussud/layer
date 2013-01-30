@@ -26,6 +26,9 @@ Add the 'dockpanel' class to the container element you want to use as the panel.
 
 Look in the samples directory for simple examples.
 
+A jsfiddle example can be found here: http://jsfiddle.net/qMY6T/1/
+
+
 DockPanel
 ---
 DockPanel is used to create top-level UI, such as a header, footer, sidebar, and content area. It works by adding children, in order, based on where they choose to dock themselves. 
